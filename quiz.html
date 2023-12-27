@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Computer Quiz App</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      text-align: center;
+      margin: 20px;
+      background-color: #f4f4f4;
+    }
+    #quiz-container {
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #fff;
+      border: 1px solid #0aca57;
+      border-radius: 8px;
+    }
+    #question {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+    .options {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .option {
+      margin: 5px;
+      padding: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .option:hover {
+      background-color: #ddd;
+    }
+    #result {
+      font-weight: bold;
+      margin-top: 20px;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<div id="quiz-container">
+  <div id="question"></div>
+  <div class="options"></div>
+  <button id="submitBtn" onclick="submitAnswer()">Submit Answer</button>
+  <div id="result" class="hidden"></div>
+</div>
+
+<script>
+  const questions = [
+    {
+      question: 'What does CPU stand for?',
+      options: ['Central Processing Unit', 'Computer Personal Unit', 'Central Processor Unit', 'Central Process Unit'],
+      correctAnswer: 'Central Processing Unit'
+    },
+    {
+      question: 'What is the full form of RAM?',
+      options: ['Random Access Memory', 'Read Access Memory', 'Random Available Memory', 'Read Available Memory'],
+      correctAnswer: 'Random Access Memory'
+    },
+    {
+      question: 'Which programming language is known as the "mother of all languages"?',
+      options: ['Java', 'C', 'Python', 'Assembly'],
+      correctAnswer: 'Assembly'
+    },
+    {
+        question: 'Father of c++ language?',
+        options: ['Bjarne Strouptrup','james gosling','dennis retchie'],
+        correctAnswer: "Bjarne Strouptrup"
+    }
+  ];
+  let currentQuestion = 0;
+  let score = 0;
+
+  function loadQuestion() {
+    const questionElement = document.getElementById('question');
+    const optionsElement = document.querySelector('.options');
+    const currentQuiz = questions[currentQuestion];
+
+    questionElement.textContent = currentQuiz.question;
+    optionsElement.innerHTML = '';
+
+    currentQuiz.options.forEach((option, index) => {
+      const optionElement = document.createElement('div');
+      optionElement.className = 'option';
+      optionElement.textContent = option;
+      optionElement.addEventListener('click', () => selectAnswer(index, optionElement));
+      optionsElement.appendChild(optionElement);
+    });
+  }
+
+  function selectAnswer(index, optionElement) {
+    const currentQuiz = questions[currentQuestion];
+    const selectedOption = currentQuiz.options[index];
+
+    if (selectedOption === currentQuiz.correctAnswer) {
+      score++;
+      optionElement.style.backgroundColor = '#4CAF50'; // Green for correct answer
+    } else {
+      optionElement.style.backgroundColor = '#FF5733'; // Red for incorrect answer
+    }
+
+    disableOptions();
+
+    setTimeout(() => {
+      currentQuestion++;
+
+      if (currentQuestion < questions.length) {
+        loadQuestion();
+      } else {
+        showResult();
+      }
+    }, 1000);
+  }
+
+  function showResult() {
+    const resultElement = document.getElementById('result');
+    resultElement.textContent = `Your score: ${score} out of ${questions.length}`;
+    document.getElementById('quiz-container').style.display = 'none';
+    resultElement.classList.remove('hidden');
+  }
+
+  function submitAnswer() {
+    disableOptions();
+    document.getElementById('submitBtn').style.display = 'none';
+    showResult();
+  }
+
+  function disableOptions() {
+    const options = document.querySelectorAll('.option');
+    options.forEach(option => option.removeEventListener('click', () => {}));
+  }
+
+  loadQuestion();
+</script>
+
+</body>
+</html>
